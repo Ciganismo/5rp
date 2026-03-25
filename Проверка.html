@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Выгрузка</title>
+    <style>
+        :root {
+            --bg-body: #141414;
+            --bg-panel: #1b1b1b;
+            --bg-header: #181818;
+            --accent: #ff8c00;
+            --text-main: #cecece;
+            --text-white: #ffffff;
+            --border: #2a2a2a;
+            --row-hover: #222222;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            font-size: 13px;
+        }
+
+        .admin-header {
+            background-color: var(--bg-header);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            border-bottom: 2px solid var(--accent);
+            justify-content: space-between;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: var(--text-white);
+            font-size: 1.2rem;
+        }
+
+        .logo-area span { color: var(--accent); }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: right;
+        }
+
+        .discord-tag {
+            color: var(--accent);
+            font-size: 0.75rem;
+            margin-top: 2px;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        .wrapper {
+            padding: 25px 40px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        .filter-panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 4px;
+            align-self: start;
+        }
+
+        .filter-panel h3 {
+            color: var(--accent);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: #111;
+            border: 1px solid var(--border);
+            padding: 10px;
+            color: #fff;
+            box-sizing: border-box;
+            border-radius: 2px;
+            margin-bottom: 10px;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 2px;
+            margin-bottom: 10px;
+        }
+
+        .btn-orange { background-color: var(--accent); color: #000; }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .table-container {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background-color: #222;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            font-weight: bold;
+            color: var(--text-white);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 10px 20px;
+            background-color: #1d1d1d;
+            color: #888;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .data-table td {
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+            font-family: 'Consolas', monospace;
+            word-break: break-all;
+        }
+
+        .data-table tr:hover {
+            background-color: var(--row-hover);
+        }
+
+        .upload-zone {
+            background: #1d1d1d;
+            border: 1px dashed var(--accent);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .count-tag {
+            color: var(--accent);
+        }
+
+        .list-tag {
+            background: #2a2a2a;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            border-radius: 2px;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #333; }
+    </style>
+</head>
+<body>
+
+<header class="admin-header">
+    <div class="logo-area">GTA<span>5</span> RP</div>
+    <div class="user-info">
+        <div>
+            <span class="discord-tag">Discord: ciganismo</span>
+        </div>
+    </div>
+</header>
+
+<div class="wrapper">
+    <aside class="filter-panel">
+        <h3>Поиск доменов</h3>
+        <input type="text" id="domainInput" placeholder="Введите домен...">
+        <button class="btn-action btn-orange" onclick="addDomain()">Поиск</button>
+        <div id="activeDomains" style="margin-top: 15px;"></div>
+        <button class="btn-action" style="background:#2a2a2a; color:#888; margin-top:15px;" onclick="clearAll()">Сбросить всё</button>
+    </aside>
+
+    <main class="main-content">
+        <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+            <strong style="color: var(--accent);">КЛИКНИТЕ ДЛЯ ЗАГРУЗКИ LOG-ФАЙЛА (.TXT)</strong>
+            <input type="file" id="fileInput" accept=".txt" style="display: none;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="table-container">
+                <div class="table-header">Найденные сайты <span class="count-tag" id="urlCount">0</span></div>
+                <div style="max-height: 650px; overflow-y: auto;">
+                    <table class="data-table">
+                        <thead><tr><th>URL Ресурс</th></tr></thead>
+                        <tbody id="urlList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">База почт <span class="count-tag" id="emailCount">0</span></div>
+                <div style="max-height: 650px; overflow-y: auto;">
+                    <table class="data-table">
+                        <thead><tr><th>Email (Сортировка по длине)</th></tr></thead>
+                        <tbody id="emailList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <button class="btn-action btn-orange" style="width: 250px; align-self: flex-end;" onclick="copyEmails()">Копировать список почт</button>
+    </main>
+</div>
+
+<script>
+    const initialDomains = ['0xcheats.net', 'binware.su', 'hydrogen.ac', 'binvnce.su', 'unicore.cloud', 'leet-cheats.ru', 'skript.gg'];
+    const validProviders = ['mail.ru', 'inbox.ru', 'list.ru', 'bk.ru', 'yandex.ru', 'yandex.ua', 'ya.ru', 'ukr.net', 'i.ua', 'gmail.com', 'outlook.com', 'hotmail.com', 'proton.me', 'mail.com'];
+
+    let targetDomains = new Set(initialDomains);
+    let fileContent = "";
+
+    window.onload = () => updateUI();
+
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => { fileContent = e.target.result; analyze(); };
+        reader.readAsText(file);
+    });
+
+    function addDomain() {
+        const input = document.getElementById('domainInput');
+        const val = input.value.trim().toLowerCase();
+        if (val) { targetDomains.add(val); input.value = ""; updateUI(); analyze(); }
+    }
+
+    function removeDomain(domain) { targetDomains.delete(domain); updateUI(); analyze(); }
+    function clearAll() { targetDomains.clear(); updateUI(); analyze(); }
+
+    function updateUI() {
+        const list = document.getElementById('activeDomains');
+        list.innerHTML = "";
+        targetDomains.forEach(d => {
+            const div = document.createElement('div');
+            div.className = 'list-tag';
+            div.innerHTML = `<span>${d}</span><span style="color:#e74c3c; cursor:pointer" onclick="removeDomain('${d}')">✕</span>`;
+            list.appendChild(div);
+        });
+    }
+
+    function analyze() {
+        if (!fileContent) return;
+        const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+        const urlRegex = /https?:\/\/[^\s"'<>|]+/g;
+
+        const allUrls = fileContent.match(urlRegex) || [];
+        const activeFilters = Array.from(targetDomains);
+        const filteredUrls = [...new Set(allUrls.filter(u => activeFilters.some(f => u.toLowerCase().includes(f))))];
+
+        const allEmails = fileContent.match(emailRegex) || [];
+        const filteredEmails = [...new Set(allEmails.filter(e => validProviders.some(p => e.toLowerCase().endsWith(p))))];
+
+        render('urlList', 'urlCount', filteredUrls.sort((a,b) => b.length - a.length));
+        render('emailList', 'emailCount', filteredEmails.sort((a,b) => b.length - a.length));
+    }
+
+    function render(listId, countId, data) {
+        const el = document.getElementById(listId);
+        document.getElementById(countId).innerText = data.length;
+        el.innerHTML = data.map(item => `<tr><td>${item}</td></tr>`).join('');
+    }
+
+    function copyEmails() {
+        const table = document.getElementById('emailList');
+        const items = Array.from(table.querySelectorAll('td')).map(td => td.innerText);
+        if(!items.length) return;
+        navigator.clipboard.writeText(items.join('\n')).then(() => alert('БАЗА СКОПИРОВАНА'));
+    }
+
+    document.getElementById('domainInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') addDomain(); });
+</script>
+</body>
+</html>
